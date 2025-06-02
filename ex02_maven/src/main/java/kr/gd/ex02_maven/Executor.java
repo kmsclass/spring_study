@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  *   "executor" 이름으로 ApplicationContext(컨테이너) 객체에 저장
  */
 @Component
-public class Executor {
+public class Executor { //이름 : executor 이름으로 등록
   @Autowired   //컨테이너에서 Worker 타입의 객체를 worker에 주입. DI(의존성주입)
   private Worker worker;
   public void addUnit(WorkUnit unit) {
