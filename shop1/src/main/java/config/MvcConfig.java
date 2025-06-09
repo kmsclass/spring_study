@@ -60,6 +60,7 @@ public class MvcConfig implements WebMvcConfigurer{
 		SimpleMappingExceptionResolver ser = new SimpleMappingExceptionResolver();
 		Properties pr = new Properties();
 		pr.put("exception.ShopException", "exception");
+		//exception.ShopException 예외 발생시 exception.jsp 페이지 이동
 		ser.setExceptionMappings(pr);
 		return ser;
 	}
