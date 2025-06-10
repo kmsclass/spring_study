@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import exception.ShopException;
+import logic.Sale;
 import logic.User;
+import service.ShopService;
 import service.UserService;
 import util.ShopUtil;
 
@@ -26,6 +28,8 @@ import util.ShopUtil;
 public class UserController {
 	@Autowired
 	private UserService service;
+	@Autowired
+	private ShopService shopService;
 	
 	@GetMapping("*")  //Get 방식 모든 요청시 호출
 	public ModelAndView form() {
@@ -109,7 +113,10 @@ public class UserController {
 	public ModelAndView idCheckMypage(String userid,HttpSession session) {
 		ModelAndView mav = new ModelAndView();
 		User user = service.selectUser(userid);
+		//Sale : db정보,  주문상품정보
+		List<Sale> salelist = shopService.saleList(userid);
 		mav.addObject("user", user);
+		mav.addObject("salelist", salelist);
 		return mav;
 	}	
 	@RequestMapping("logout")
