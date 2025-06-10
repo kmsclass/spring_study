@@ -19,7 +19,18 @@ import service.ShopService;
 public class CartController {
 	@Autowired
 	private ShopService service;
-	
+	/*
+	 * 문제
+	 * 1.  
+	 * 장바구니에 존재하는 상품의 경우 수량만 증가하기
+	 * 장바구니에 존재하는 상품이 아닌 경우 상품 추가하기
+	 * 
+	 * 2. 
+	 * 비밀번호 찾기를 비밀번호 초기화로 수정하기
+	 *  기존 비밀번호 : 1234
+	 *  비밀번호 초기화 : 전체 6자리의 대문자/소문자/숫자 임의의 조합으로 변경하기
+	 *                 사용자에게 출력하기
+	 */
 	@RequestMapping("cartAdd")
 	public ModelAndView add(Integer id,Integer quantity,HttpSession session){
 		//new ModelAndView(뷰명) : /WEB-INF/view/cart/cart.jsp

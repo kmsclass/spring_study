@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import exception.ShopException;
 import logic.User;
 import service.UserService;
+import util.ShopUtil;
 
 @Controller
 @RequestMapping("user")
@@ -271,7 +272,13 @@ public class UserController {
 			bresult.reject(code);
 		    return mav;
   	    }
-		//검색 완료인 경우
+		//아이디 또는 비밀번호를 검색한 경우
+		if(url.equals("pw")) {
+			//result : 영문자,숫자 중 임의의 6개의 문자를 저장
+			result =  ShopUtil.getRandomString(6,true,true);
+			//초기화된 비밀번호로 DB의 비밀번호 변경
+			service.userChgpass(user.getUserid(), result); 
+		}
 		mav.addObject("result",result);
 		mav.addObject("title",title);
 		mav.setViewName("search");
