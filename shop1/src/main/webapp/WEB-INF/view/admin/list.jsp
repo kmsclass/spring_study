@@ -20,7 +20,7 @@
 <body>
 <h2>회원목록</h2>
 <form action="mailForm" method="post">
-  <table class="w3-table-all">
+  <table>
   <tr><th>아이디</th>
       <th>이름</th>
       <th>전화</th>
@@ -36,5 +36,5 @@
   <a href="../user/mypage?userid=${user.userid}">회원정보</a></td>
   <td><input type="checkbox" name="idchks" class="idchks" value="${user.userid}"></td></tr>
   </c:forEach>
-  <tr><td colspan="7" class="w3-center"><input type="submit" value="메일보내기"></td></tr>
+  <tr><td colspan="7"><input type="submit" value="메일보내기"></td></tr>
   </table></form></body></html>

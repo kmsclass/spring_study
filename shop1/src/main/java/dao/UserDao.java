@@ -1,6 +1,7 @@
 package dao;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -48,5 +49,9 @@ public class UserDao {
 		param.put("email", user.getEmail());
 		param.put("phoneno", user.getPhoneno());
 		return template.getMapper(cls).search(param);
+	}
+
+	public List<User> list() {
+		return template.getMapper(cls).select(null);
 	}
 }
