@@ -5,11 +5,13 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import kr.gdu.logic.Item;
 
+@Mapper
 public interface ItemMapper {
 	@Select({"<script>",
 "select * from item <if test='id != null'>where id=#{id}</if> order by id",

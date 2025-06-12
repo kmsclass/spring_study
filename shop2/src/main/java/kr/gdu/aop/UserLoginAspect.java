@@ -18,7 +18,7 @@ import kr.gdu.logic.User;
 @Aspect
 public class UserLoginAspect {
 	@Around
-  ("execution(* controller.User*.idCheck*(..)) && args(..,userid,session)")
+  ("execution(* kr.gdu.controller.User*.idCheck*(..)) && args(..,userid,session)")
 		public Object userIdCheck
 		       (ProceedingJoinPoint joinPoint,String userid,
 				HttpSession session) throws Throwable {

@@ -18,7 +18,7 @@ public class CartAspect {
 	 *            check* 로 시작하는 메서드
 	 * advice : Before로 설정함           
 	 */
-	@Before("execution(* controller.Cart*.check*(..)) && args(..,session)")
+	@Before("execution(* kr.gdu.controller.Cart*.check*(..)) && args(..,session)")
 	public void cartCheck(HttpSession session) throws Throwable {
 		User loginUser = (User)session.getAttribute("loginUser");
 		if(loginUser == null) {

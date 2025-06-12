@@ -13,7 +13,7 @@ import kr.gdu.logic.User;
 @Component
 @Aspect
 public class AdminLoginAspect {
-	@Around("execution(* controller.AdminController.*(..)) && args(..,session)")
+	@Around("execution(* kr.gdu.controller.AdminController.*(..)) && args(..,session)")
 	public Object adminCheck(ProceedingJoinPoint joinPoint, HttpSession session) 
 			throws Throwable {
 		User loginUser = (User)session.getAttribute("loginUser");
