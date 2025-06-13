@@ -35,5 +35,26 @@ public class BoardDao {
 		param.put("searchcontent",searchcontent);
 		return template.getMapper(cls).select(param);
 	}
-	
+	public Board selectOne(Integer num) {
+		param.clear();
+		param.put("num", num);
+		return template.selectOne("kr.gdu.dao.mapper.BoardMapper.select",param);
+	}
+	public void addReadcnt(Integer num) {
+		param.clear();
+		param.put("num", num);
+		template.getMapper(cls).addReadcnt(param);
+	}
+	public int maxNum() {
+		return template.getMapper(cls).maxNum();
+	}
+	public void insert(Board board) {
+		template.getMapper(cls).insert(board);
+	}
+	public void update(Board board) {
+		template.getMapper(cls).update(board);		
+	}
+	public void delete(int num) {
+		template.getMapper(cls).delete(num);
+	}	
 }
