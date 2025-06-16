@@ -4,24 +4,16 @@ import java.util.Properties;
 
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.servlet.HandlerMapping;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import com.zaxxer.hikari.HikariDataSource;
+
+import kr.gdu.intercepter.BoardInterceptor;
 
 @Configuration 
 //@EnableAspectJAutoProxy //AOP 사용을 위한 설정
@@ -56,5 +48,13 @@ public class MvcConfig implements WebMvcConfigurer{
     public HikariDataSource dataSource(DataSourceProperties properties) {
         return properties.initializeDataSourceBuilder().type
         		(HikariDataSource.class).build(); //Connection POOL객체
-    }	
+    }
+	//인터셉터관련 설정
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new BoardInterceptor())
+		.addPathPatterns("/board/write") //요청 url 정보
+		.addPathPatterns("/board/update")
+		.addPathPatterns("/board/delete");		
+	}    
 }

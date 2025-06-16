@@ -35,7 +35,7 @@ function listpage(page) {
       </td></form></tr>
     <c:if test="${listcount > 0}"> <!-- 등록된 게시물 건수 -->
      <tr><td colspan="5" class="w3-right-align">글개수:${listcount}</td></tr>
-     <tr><th  >번호</th><th>제목</th><th>글쓴이</th><th>날짜</th><th>조회수</th></tr>
+     <tr><th>번호</th><th>제목</th><th>글쓴이</th><th>날짜</th><th>조회수</th></tr>
   <c:forEach var="board" items="${boardlist}">
       <tr><td>${boardno}</td> <%-- 화면 보여지는 게시물 번호 --%>
           <c:set var="boardno" value="${boardno - 1}" />
@@ -70,5 +70,5 @@ function listpage(page) {
    <c:if test="${listcount == 0}">
       <tr><td colspan="5">등록된 게시물이 없습니다.</td></tr>
    </c:if>
-   <tr><td colspan="5"><a href="write" class="w3-right">[글쓰기]</a></td></tr>
+   <tr><td colspan="5"><a href="write?boardid=${boardid}" class="w3-right">[글쓰기]</a></td></tr>
 </table></body></html>
