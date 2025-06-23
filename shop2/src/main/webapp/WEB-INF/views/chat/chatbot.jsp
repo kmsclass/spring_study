@@ -30,6 +30,7 @@ gpt_question.addEventListener("keydown",(e)=>{
 	}
 })
 	function gptquestion () {
+	    //gpt_question : 질문내용
 		let gpt_question = document.querySelector("#gpt_question").value
 		if (gpt_question == '') {
 			alert("AI챗봇 에게 질문할 내용을 입력해 주세요")
@@ -41,6 +42,7 @@ gpt_question.addEventListener("keydown",(e)=>{
 			document.querySelector("#gpt_question").focus()
 			return
 		}
+		//채팅 영역에 질문 부분 출력.
    		let html = "<div class='chat me'><div class='icon'><i></i></div>"
    	   		html += "<div class='textbox'>"+gpt_question+"</div></div>"
    	 		document.querySelector("#gptanswerarea").innerHTML += html
@@ -56,6 +58,7 @@ gpt_question.addEventListener("keydown",(e)=>{
             referrerPolicy: "no-referrer",   
 		    body : "question="+gpt_question		     
 	     }
+   		// jquery 방식이 아니고, ES6버전으로 서버에 요청
 		fetch('/ajax/gptquestion',paramdata)
 	     .then(response=> response.text())
 	     .then(gptdata=>{

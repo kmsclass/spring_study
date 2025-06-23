@@ -91,9 +91,13 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     <i class="fa fa-eye fa-fw"></i>&nbsp; QnA</a>
   </div>
   <hr>
-    <a href="${path}/chat/chatbot" 
+    <a href="" 
+    class="w3-bar-item w3-button${path}/chat/chatbot w3-padding ">
+    <i class="fa fa-eye fa-fw"></i>&nbsp; 챗봇</a>
+  <hr>
+    <a href="${path}/naver/search" 
     class="w3-bar-item w3-button w3-padding ">
-    <i class="fa fa-eye fa-fw"></i>&nbsp; 챗봇</a>  
+    <i class="fa fa-eye fa-fw"></i>&nbsp; 네이버 검색</a>      
   <br><br>
   <%-- 수출입은행 환율 정보 표시 영역 --%>
   <div style="width:100%;">

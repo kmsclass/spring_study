@@ -121,7 +121,7 @@ public class AjaxController {
 	  } catch (URISyntaxException | IOException | InterruptedException e) {
 		e.printStackTrace();
 	  }
-	  System.out.println(response);
+//	  System.out.println(response);
 	  return response;
 	}	
 }
