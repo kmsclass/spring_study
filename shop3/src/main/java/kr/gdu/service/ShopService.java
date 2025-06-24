@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletRequest;
-
+import jakarta.validation.Valid;
 import kr.gdu.logic.Item;
 import kr.gdu.repository.ItemRepository;
 
@@ -140,4 +140,15 @@ public class ShopService {
 		}		
 	}
 */
+	public void itemUpdate(@Valid Item item, HttpServletRequest request) {
+		if(item.getPicture() != null && !item.getPicture().isEmpty()) {
+		  String path = request.getServletContext().getRealPath("/")+"img/";
+		  uploadFileCreate(item.getPicture(),path);
+		  item.setPictureUrl(item.getPicture().getOriginalFilename());
+		}
+		itemDao.save(item);	//수정	
+	}
+	public void itemDelete(Integer id) {
+		itemDao.deleteById(id); //
+	}
 }

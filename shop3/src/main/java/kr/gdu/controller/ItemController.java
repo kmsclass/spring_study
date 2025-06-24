@@ -54,4 +54,24 @@ public class ItemController {
 		mav.setViewName("redirect:list");  //list 재 요청
 		return mav;
 	}
+	@PostMapping("update")
+	public ModelAndView update(@Valid Item item, BindingResult bresult, 
+			HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView();
+		if(bresult.hasErrors()) {
+			return mav;
+		}
+		/*
+		 * item : id,name,price,description,pictureUrl 입력값 저장
+		 */
+		service.itemUpdate(item,request);
+		mav.setViewName("redirect:list");
+		return mav;
+	}
+	@PostMapping("delete")
+	public String delete(Integer id) {
+		service.itemDelete(id);
+		return "redirect:list"; //뷰선택
+	}
+	
 }
