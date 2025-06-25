@@ -13,6 +13,24 @@ import java.sql.ResultSet;
  */
 public class Main_04 {
 	public static void main(String[] args) throws Exception{
+		Class.forName("org.mariadb.jdbc.Driver");
+		Connection conn = DriverManager.getConnection
+	 ("jdbc:mariadb://localhost:3306/gdjdb","gduser","1234");
+		PreparedStatement pstmt = conn.prepareStatement
+				       ("select * from useraccount");
+		ResultSet rs = pstmt.executeQuery();
+		while(rs.next()) {
+			String userid = rs.getString("userid");
+			String email = rs.getString("email");
+			//userid값의 SHA-256 기준의 해귀값 리턴
+			String key = CipherUtil.makehash(userid);
+			String cipherEmail = CipherUtil.encrypt(email,key); 
+			pstmt = conn.prepareStatement
+					("update usercipher set email=? where userid=?");
+			pstmt.setString(1, cipherEmail);
+			pstmt.setString(2, userid);
+			pstmt.executeUpdate();			
+		}
 
 	}
 }
