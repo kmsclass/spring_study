@@ -1,6 +1,8 @@
 <!-- /resources/templates/item/list.html -->    
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" >
+<html xmlns:th="http://www.thymeleaf.org" 
+   th:replace=
+  "~{/layout/layout :: layout(~{::title}, ~{::body}, ~{::style})}">
 <head>
 <meta charset="UTF-8">
 <title>상품목록</title>
