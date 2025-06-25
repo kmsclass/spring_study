@@ -38,7 +38,7 @@ th:replace="~{/layout/layout :: layout(~{::title}, ~{::body}, ~{::style})}">
 <table>
  <tr><td id="tab1" class="tab">
  <a href="javascript:disp_div('minfo','tab1')" class="title">회원정보</a></td>
-     <td id="tab2" class="tab" th:if="${param.userid != 'admin'}">
+     <td id="tab2" class="tab" th:if="${session.loginUser.userid != 'admin'}">
  <a href="javascript:disp_div('oinfo','tab2')"  class="title">주문정보</a></td>
    </tr></table>
 <div id="oinfo" class="info" style="display:none; width:100%;">
@@ -77,9 +77,9 @@ th:replace="~{/layout/layout :: layout(~{::title}, ~{::body}, ~{::style})}">
  <a href="logout">[로그아웃]</a>&nbsp;
  <a th:href="@{update(userid=${user.userid})}">[회원정보수정]</a>&nbsp;
  <a href="password">[비밀번호수정]</a>&nbsp;
- <div th:if="${session.loginUser.userid != 'admin'}">
+ <span th:if="${session.loginUser.userid != 'admin'}">
     <a th:href="@{delete(userid=${user.userid})}">[회원탈퇴]</a>&nbsp;
- </div>
-<div th:if="${session.loginUser.userid == 'admin'}">
+ </span>
+<span th:if="${session.loginUser.userid == 'admin'}">
  <a href="../admin/list">[회원목록]</a>&nbsp;
-</div></div></body></html>
+</span></div></body></html>

@@ -467,4 +467,11 @@ public class UserController {
 //		mav.setViewName("search");
 //		return mav;
 //	}
+	private User emailDecrypt(User user) {
+		String key = CipherUtil.makehash(user.getUserid()).substring(0,16);
+		String plainEmail = CipherUtil.decrypt(user.getEmail(),key);
+		user.setEmail(plainEmail);
+		return user;
+	}
+	
 }
