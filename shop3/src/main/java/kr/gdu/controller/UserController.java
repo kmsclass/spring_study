@@ -27,11 +27,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-//import kr.gdu.exception.ShopException;
-//import kr.gdu.logic.Sale;
-import kr.gdu.logic.User;
+import kr.gdu.domain.User;
+import kr.gdu.dto.UserDto;
 import kr.gdu.service.ShopService;
 import kr.gdu.service.UserService;
+import kr.gdu.util.CipherUtil;
 //import kr.gdu.util.ShopUtil;
 
 @Controller
@@ -45,12 +45,12 @@ public class UserController {
 	@GetMapping("*")  //Get 방식 모든 요청시 호출
 	public ModelAndView form() {
 		ModelAndView mav = new ModelAndView();
-		mav.addObject(new User());
+		mav.addObject(new UserDto());
 		return mav; //url과 연동된 뷰를 호출
 	}
 	@PostMapping("join")
 	//BindingResult은 입력값 검증대상 변수의 다음에 와야함
-	public ModelAndView userAdd(@Valid User user,BindingResult bresult) {
+	public ModelAndView userAdd(@Valid UserDto user,BindingResult bresult) {
 		ModelAndView mav = new ModelAndView();
 		if (bresult.hasErrors()) {
 			//추가 오류 메세지 등록. global error로 추가하기
@@ -60,7 +60,25 @@ public class UserController {
 		}
 		//정상적으로 입력된 경우
 		try {
-		  service.userInsert(user);
+		  //1. 비밀번호 해쉬함수로 해쉬값으로 변경
+		  //2. 이메일을 암호화 처리
+		  //   userid의 해쉬값
+		  //   email 암호화	
+		  String cipherPass = CipherUtil.makehash(user.getPassword());
+		  user.setPassword(cipherPass);
+		  String cipherUserid = CipherUtil.makehash(user.getUserid());
+		  String cipherEmail = CipherUtil.encrypt
+				                  (user.getEmail(), cipherUserid);
+		  user.setEmail(cipherEmail);
+		  service.userInsert(
+				  kr.gdu.domain.User.builder()
+				   .userid(user.getUserid())
+			       .password(cipherPass)
+			       .username(user.getUsername())
+			       .email(cipherEmail)
+			       .address(user.getAddress())
+			       .phoneno(user.getPhoneno())
+			       .birthday(user.getBirthday()).build());
 		} catch (DataIntegrityViolationException e) {//키값 중복된 경우
 			e.printStackTrace();
 			bresult.reject("error.duplicate.user");
@@ -77,76 +95,78 @@ public class UserController {
 	 * 1. /WEB-INF/views/user/login.jsp 페이지 출력
 	 * 2. 네이버 로그인 link 생성
 	 */
-//	@GetMapping("login") 
-//	public ModelAndView loginForm(HttpSession session) {
-//		ModelAndView mav = new ModelAndView();
-//		String clientId="네이버의 client Id";
-//		clientId = "CfrRBFs5rfhJxTkwkm4V";
-//		String redirectURL = null;
-//		try {
-//			//콜백URL 설정 => 네이버에서 정상처리로 결정되면 호출해주는 URL
-//			redirectURL = URLEncoder.encode
-//					   ("http://localhost:8080/user/naverlogin","UTF-8");
-//		} catch(UnsupportedEncodingException e) {
-//			e.printStackTrace();
-//		}
-//		SecureRandom random = new SecureRandom();
-//		//130자리 임의의 큰정수값
-//		String state = new BigInteger(130,random).toString();
-//		
-//		String apiURL = 
-//		 "https://nid.naver.com/oauth2.0/authorize?response_type=code";
-//		apiURL += "&client_id="+clientId;
-//		apiURL += "&redirect_uri="+redirectURL;
-//		apiURL += "&state="+state;
-//		mav.addObject(new User());
-//		mav.addObject("apiURL",apiURL);
-//		session.getServletContext().setAttribute("session",session);
-//		System.out.println("1.session.id="+session.getId());
-//		return mav;
-//	}
-//	
-//	/*
-//		1. userid 맞는 User를 db에서 조회하기
-//		2. 비밀번호 검증  
-//		   일치 : session.setAttribute("loginUser",dbUser) => 로그인 정보
-//		   불일치 : 비밀번호를 확인하세요. 출력 (error.login.password)
-//		3. 비밀번호 일치하는 경우 mypage로 페이지 이동 => 404 오류 발생 (임시)
-//	 */
-//	@PostMapping("login") //db의 내용으로 기본 로그인 방식
-//	public ModelAndView login(User user,BindingResult bresult,
-//			HttpSession session) {
-//		// session : 세션 객체 제공
-//		if(user.getUserid().trim().length() < 3 || 
-//		   user.getUserid().trim().length() > 10) {
-//			//@Valid 어노테이션에서 등록 방식으로 처리
-//			//messages.properties 파일에 error.required.userid로 메세지 등록
-//			bresult.rejectValue("userid", "error.required");
-//		}
-//		if(user.getPassword().trim().length() < 3 || 
-//		   user.getPassword().trim().length() > 10) {
-//			bresult.rejectValue("password", "error.required");
-//		}
-//		ModelAndView mav = new ModelAndView();
-//		if(bresult.hasErrors()) { //등록된 오류 존재?
-//			//global error 등록
-//			bresult.reject("error.input.check");
-//			return mav;
-//		}
-//		User dbUser = service.selectUser(user.getUserid());
-//		if(dbUser == null) { //아이디 없음
-//			bresult.reject("error.login.id");
-//			return mav;
-//		}
-//		if(user.getPassword().equals(dbUser.getPassword())) { //일치
-//		   session.setAttribute("loginUser", dbUser);
-//		   mav.setViewName("redirect:mypage?userid=" + user.getUserid());
-//		} else {
-//			bresult.reject("error.login.password");
-//			return mav;
-//		}
-//	return mav;
-//	}
+	@GetMapping("login") 
+	public ModelAndView loginForm(HttpSession session) {
+		ModelAndView mav = new ModelAndView();
+		String clientId="네이버의 client Id";
+		clientId = "CfrRBFs5rfhJxTkwkm4V";
+		String redirectURL = null;
+		try {
+			//콜백URL 설정 => 네이버에서 정상처리로 결정되면 호출해주는 URL
+			redirectURL = URLEncoder.encode
+					   ("http://localhost:8080/user/naverlogin","UTF-8");
+		} catch(UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		SecureRandom random = new SecureRandom();
+		//130자리 임의의 큰정수값
+		String state = new BigInteger(130,random).toString();
+		
+		String apiURL = 
+		 "https://nid.naver.com/oauth2.0/authorize?response_type=code";
+		apiURL += "&client_id="+clientId;
+		apiURL += "&redirect_uri="+redirectURL;
+		apiURL += "&state="+state;
+		mav.addObject(new UserDto());
+		mav.addObject("apiURL",apiURL);
+		session.getServletContext().setAttribute("session",session);
+		return mav;
+	}
+	
+	/*
+		1. userid 맞는 User를 db에서 조회하기
+		2. 비밀번호 검증  
+		   일치 : session.setAttribute("loginUser",dbUser) => 로그인 정보
+		   불일치 : 비밀번호를 확인하세요. 출력 (error.login.password)
+		3. 비밀번호 일치하는 경우 mypage로 페이지 이동 => 404 오류 발생 (임시)
+	 */
+	@PostMapping("login") //db의 내용으로 기본 로그인 방식
+	public ModelAndView login(UserDto user,BindingResult bresult,
+			HttpSession session) {
+		// session : 세션 객체 제공
+		if(user.getUserid().trim().length() < 3 || 
+		   user.getUserid().trim().length() > 10) {
+			//@Valid 어노테이션에서 등록 방식으로 처리
+			//messages.properties 파일에 error.required.userid로 메세지 등록
+			bresult.rejectValue("userid", "error.required");
+		}
+		if(user.getPassword().trim().length() < 3 || 
+		   user.getPassword().trim().length() > 10) {
+			bresult.rejectValue("password", "error.required");
+		}
+		ModelAndView mav = new ModelAndView("user/login");
+		if(bresult.hasErrors()) { //등록된 오류 존재?
+			//global error 등록
+			bresult.reject("error.input.check");
+			return mav;
+		}
+		User dbUser = service.selectUser(user.getUserid());
+		if(dbUser == null) { //아이디 없음
+			bresult.reject("error.login.id");
+			return mav;
+		}
+		//CipherUtil.makehash(user.getPassword())
+		// 입력받은 비밀번호를 해쉬값으로 변경하여, db의 비밀번호와 비교
+		if(CipherUtil.makehash(user.getPassword()).equals
+				                    ( dbUser.getPassword())) { //비밀번호일치
+		   session.setAttribute("loginUser", dbUser);
+		   mav.setViewName("redirect:mypage?userid=" + user.getUserid());
+		} else {
+			bresult.reject("error.login.password");
+			return mav;
+		}
+	return mav;
+	}
 //	@RequestMapping("naverlogin")
 //	public String naverlogin(String code, String state, HttpSession session) {
 //		System.out.println("2.session.id="+session.getId());
@@ -256,23 +276,25 @@ public class UserController {
 //		return "redirect:mypage?userid="+user.getUserid();
 //	}
 //	
-//	/*
-//	 * AOP 설정필요 : UserLoginAspect 클래스의 userIdCheck 메서드로 구현
-//	 *  1. 로그여부 검증
-//	 *     로그아웃상태인 경우 로그후 거래메세지 출력. login 페이지로 이동
-//	 *  2. 본인 거래 여부 검증
-//	 *     admin이 아니면서 다른 사용자 정보 출력 불가   
-//	 */
-//	@RequestMapping("mypage")
-//	public ModelAndView idCheckMypage(String userid,HttpSession session) {
-//		ModelAndView mav = new ModelAndView();
-//		User user = service.selectUser(userid);
-//		//Sale : db정보,  주문상품정보
+	/*
+	 * AOP 설정필요 : UserLoginAspect 클래스의 userIdCheck 메서드로 구현
+	 *  1. 로그여부 검증
+	 *     로그아웃상태인 경우 로그후 거래메세지 출력. login 페이지로 이동
+	 *  2. 본인 거래 여부 검증
+	 *     admin이 아니면서 다른 사용자 정보 출력 불가   
+	 */
+	//2025-06-25 : 이메일을 복호화 하여 mypage 화면에 출력하기
+	@RequestMapping("mypage")
+	public ModelAndView idCheckMypage(String userid,HttpSession session) {
+		ModelAndView mav = new ModelAndView();
+		User user = service.selectUser(userid);
+		user = emailDecrypt(user);
+		//Sale : db정보,  주문상품정보
 //		List<Sale> salelist = shopService.saleList(userid);
-//		mav.addObject("user", user);
+		mav.addObject("user", user);
 //		mav.addObject("salelist", salelist);
-//		return mav;
-//	}	
+		return mav;
+	}	
 //	@RequestMapping("logout")
 //	public String logout(HttpSession session) {
 //		session.invalidate();
