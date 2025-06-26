@@ -4,15 +4,10 @@
   "~{/layout/layout :: layout(~{::title}, ~{::body}, ~{::style})}">
 <head><meta charset="UTF-8">
 <title>로그인화면</title>
-<script type="text/javascript">
-function win_open(page) {
-	   var op = "width=500, height=350, left=50,top=150";
-	   open(page ,"",op);
-}
-</script>
 </head><body>
 <h2>사용자 로그인</h2>
-<form th:object="${userDto}" method="post" action="login">
+<form th:object="${userDto}" 
+      method="post" action="login" name="loginform">
 <div th:if="${#fields.hasGlobalErrors()}">
   <div th:each="err : ${#fields.globalErrors()}"
       th:text="${err}" class="w3-text-red">Global Error</div>
@@ -30,11 +25,17 @@ function win_open(page) {
 <input type="submit" value="로그인">
 <input type="button" value="회원가입"  onclick="location.href='join'">
 <input type="button" value="아이디찾기" onclick="win_open('idsearch')">
-<input type="button" value="비밀번호찾기" onclick="win_open('pwsearch')">
+<input type="button" value="비밀번호초기화" onclick="win_open('pwsearch')">
 </td></tr></table>
 <a th:href="${apiURL}">
 <img height="30" src="http://static.nid.naver.com/oauth/small_g_in.PNG"></a>
 </form>
     <p th:if="${param.error != null}" style="color:red;">로그인 실패</p>
     <p th:if="${param.logout != null}" style="color:blue;">로그아웃 완료</p>
+<script type="text/javascript">
+function win_open(page) {
+	   var op = "width=500, height=350, left=50,top=150";
+	   open(page ,"",op);
+}
+</script>
 </body></html>

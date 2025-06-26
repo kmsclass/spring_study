@@ -36,7 +36,7 @@
     src="https://cdn.iamport.kr/js/iamport.payment-1.1.8.js"></script>
 <script type="text/javascript">
    let IMP = window.IMP
-   IMP.init("imp64423678") //가맹점 식별코드   
+   IMP.init("가맹점 식별코드") //   
    function kakaopay() {
 	   $.ajax("kakao",{
 		   success : function(json) {

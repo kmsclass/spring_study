@@ -80,7 +80,6 @@ public class UserController {
 	public ModelAndView loginForm(HttpSession session) {
 		ModelAndView mav = new ModelAndView();
 		String clientId="네이버의 client Id";
-		clientId = "CfrRBFs5rfhJxTkwkm4V";
 		String redirectURL = null;
 		try {
 			//콜백URL 설정 => 네이버에서 정상처리로 결정되면 호출해주는 URL
@@ -150,9 +149,7 @@ public class UserController {
 	public String naverlogin(String code, String state, HttpSession session) {
 		System.out.println("2.session.id="+session.getId());
 		String clientId = "클라이언트 아이디값";//애플리케이션 클라이언트 아이디값";
-		clientId = "CfrRBFs5rfhJxTkwkm4V";
 		String clientSecret = "클라이언트 시크릿값";//애플리케이션 클라이언트 시크릿값";
-		clientSecret = "h_lNha25GY";		
  	    String redirectURI=null;
 		try {
 			redirectURI = URLEncoder.encode("YOUR_CALLBACK_URL", "UTF-8");

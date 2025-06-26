@@ -35,14 +35,18 @@ th:replace="~{/layout/layout :: layout(~{::title}, ~{::body}, ~{::style})}">
    }
 </script>
 
-<table>
+<table class="w3-table">
  <tr><td id="tab1" class="tab">
+ <!--
+   session.loginUser.userid : session.loginUser null인경우 오류발생  
+  -->
  <a href="javascript:disp_div('minfo','tab1')" class="title">회원정보</a></td>
-     <td id="tab2" class="tab" th:if="${session.loginUser.userid != 'admin'}">
+     <td id="tab2" class="tab"
+th:if="${session.loginUser != null && session.loginUser.userid != 'admin'}">
  <a href="javascript:disp_div('oinfo','tab2')"  class="title">주문정보</a></td>
    </tr></table>
 <div id="oinfo" class="info" style="display:none; width:100%;">
-<table><tr><th>주문번호</th><th>주문일자</th><th>주문금액</th></tr>
+<table class="w3-table"><tr><th>주문번호</th><th>주문일자</th><th>주문금액</th></tr>
 <tr th:if="${salelist != null}" th:each="stat , sale : ${salelist}">
 <td align="center">
 <a href="javascript:list_disp('saleLine${stat.index}')">${sale.saleid}</a>
@@ -53,7 +57,7 @@ th:replace="~{/layout/layout :: layout(~{::title}, ~{::body}, ~{::style})}">
 <span th:text="${#numbers.formatInteger(sale.total, 3, 'COMMA')}">0</span>원</td></tr>
 <tr id="saleLine${stat.index}" class="saleLine">
  <td colspan="3" align="center">
- <table><tr><th>상품명</th><th>상품가격</th><th>주문수량</th><th>상품총액</th></tr>
+ <table class="w3-table"><tr><th>상품명</th><th>상품가격</th><th>주문수량</th><th>상품총액</th></tr>
    <th:block th:if="${sale != null && sale.itemList != null}">
    <tr  th:each="saleItem : ${sale.itemList}">
        <td class="title" th:text="${saleItem.item.name}"></td>
@@ -65,7 +69,7 @@ th:replace="~{/layout/layout :: layout(~{::title}, ~{::body}, ~{::style})}">
      </tr></th:block>       
    </table>
  </td></tr></table></div>
- <div id="minfo" class="info"><table>
+ <div id="minfo" class="info"><table class="w3-table">
    <tr><td>아이디</td><td th:text="${user.userid}"></td></tr>
    <tr><td>이름</td><td th:text="${user.username}"></td></tr>   
    <tr><td>우편번호</td><td th:text="${user.postcode}"></td></tr>   
