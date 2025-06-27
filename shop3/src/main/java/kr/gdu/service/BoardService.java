@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kr.gdu.domain.Board;
+import kr.gdu.dto.BoardDto;
 import kr.gdu.repository.BoardRepository;
 import kr.gdu.repository.CommRepository;
 
@@ -101,34 +102,36 @@ public class BoardService {
 		
 		return boardDao.findAll(spec,pageable);
 	}
-//	public BoardDto getBoard(Integer num) {
-//		return boardDao.selectOne(num);  //board 레코드 조회
-//	}
-//	public void addReadcnt(Integer num) {
-//		boardDao.addReadcnt(num);       //조회수 증가
-//	}
-//	public void boardWrite(BoardDto board, HttpServletRequest request) {
-//		int maxnum = boardDao.maxNum();
-//		board.setNum(++maxnum);
-//		board.setGrp(maxnum);
-//		if(board.getFile1() != null && !board.getFile1().isEmpty()) {
-//			String path = 
-//					request.getServletContext().getRealPath("/") + "board/file/";
-//			this.uploadFileCreate(board.getFile1(), path);
-//			board.setFileurl(board.getFile1().getOriginalFilename());
-//		}
-//		boardDao.insert(board);		
-//	}
-//	public void uploadFileCreate(MultipartFile file, String path) {
-//		String orgFile = file.getOriginalFilename();
-//		File f = new File(path);
-//		if(!f.exists()) f.mkdirs();
-//		try {
-//			file.transferTo(new File(path+orgFile));
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
+	public Board getBoard(Integer num) {
+		return boardDao.findById(num).orElseGet(()->null);  //board 레코드 조회
+	}
+	public void addReadcnt(Integer num) {
+		boardDao.addReadcnt(num);       //조회수 증가
+	}
+	public void boardWrite(BoardDto board, HttpServletRequest request) {
+		int maxnum = boardDao.maxNum();
+		board.setNum(++maxnum);
+		board.setGrp(maxnum);
+		if(board.getFile1() != null && !board.getFile1().isEmpty()) {
+			String path = 
+					request.getServletContext().getRealPath("/") 
+					                          + "board/file/";
+			this.uploadFileCreate(board.getFile1(), path);
+			board.setFileurl(board.getFile1().getOriginalFilename());
+		}
+		
+		boardDao.save(new Board(board));		
+	}
+	public void uploadFileCreate(MultipartFile file, String path) {
+		String orgFile = file.getOriginalFilename();
+		File f = new File(path);
+		if(!f.exists()) f.mkdirs();
+		try {
+			file.transferTo(new File(path+orgFile));
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 //	public void boardUpdate(BoardDto board, HttpServletRequest request) {
 //		if(board.getFile1() != null && !board.getFile1().isEmpty()) {
 //			String path = request.getServletContext().getRealPath("/")

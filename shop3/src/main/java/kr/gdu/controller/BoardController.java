@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import kr.gdu.domain.Board;
+import kr.gdu.domain.Comment;
 import kr.gdu.dto.BoardDto;
 import kr.gdu.exception.ShopException;
 import kr.gdu.service.BoardService;
@@ -96,54 +97,55 @@ public class BoardController {
 				new SimpleDateFormat("yyyyMMdd").format(new Date()));
 		return mav;
 	}
-//	@GetMapping("detail")
-//	public ModelAndView detail(Integer num) {
-//		ModelAndView mav = new ModelAndView("board/detail");
-//		BoardDto board = service.getBoard(num); 
-//		service.addReadcnt(num);
-//		if(board.getBoardid() == null || board.getBoardid().equals("1"))
-//			mav.addObject("boardName","공지사항");
-//		else if(board.getBoardid().equals("2"))
-//			mav.addObject("boardName","자유게시판");
-//		else if(board.getBoardid().equals("3"))
-//			mav.addObject("boardName","QNA");
+	@GetMapping("detail")
+	public ModelAndView detail(Integer num) {
+		ModelAndView mav = new ModelAndView("board/detail");
+		Board board = service.getBoard(num); 
+		service.addReadcnt(num);
+		if(board.getBoardid() == null || board.getBoardid().equals("1"))
+			mav.addObject("boardName","공지사항");
+		else if(board.getBoardid().equals("2"))
+			mav.addObject("boardName","자유게시판");
+		else if(board.getBoardid().equals("3"))
+			mav.addObject("boardName","QNA");
 //		
 //	    //댓글 목록 화면에 전달
 //		//commlist : num 게시물의 댓글 목록
 //	    List<Comment> commlist = service.commentlist(num);
 //		//유효성 검증에 필요한 Comment 객체
-//		Comment comm = new Comment();
+		Comment comm = new Comment();
 //		comm.setNum(num);
-//		mav.addObject("board",board);
+		mav.addObject("board",board);
 //		mav.addObject("commlist",commlist);
-//		mav.addObject(comm);
-//		return mav;
-//	}
-//	@PostMapping("write")
-//	public ModelAndView writePost(@Valid BoardDto board, BindingResult bresult,
-//			HttpServletRequest request) {
-//		ModelAndView mav = new ModelAndView();
-//		if (bresult.hasErrors()) {
-//			return mav;
-//		}
-//		if(board.getBoardid() == null) board.setBoardid("1");
-//		service.boardWrite(board,request);
-//		mav.setViewName("redirect:list?boardid=" + board.getBoardid());
-//		return mav;
-//	}
-//	@GetMapping({"reply","update","delete"})
-//	public ModelAndView getBoard(Integer num,String boardid) {
-//		ModelAndView mav = new ModelAndView();
-//		BoardDto board = service.getBoard(num); 
-//		mav.addObject("board",board);
-//		if(boardid == null || boardid.equals("1"))
-//			mav.addObject("boardName","공지사항");
-//		else if(boardid.equals("2"))
-//			mav.addObject("boardName","자유게시판");
-//		else if(boardid.equals("3"))
-//			mav.addObject("boardName","QNA");
-//		return mav;
-//	}
+		mav.addObject(comm);
+		return mav;
+	}
+	@PostMapping("write")
+	public ModelAndView writePost(@Valid BoardDto board, BindingResult bresult,
+			HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView();
+		if (bresult.hasErrors()) {
+			return mav;
+		}
+		if(board.getBoardid() == null) board.setBoardid("1");
+		service.boardWrite(board,request);
+		mav.setViewName("redirect:list?boardid=" + board.getBoardid());
+		return mav;
+	}
+	//게시판 : 답변, 수정, 삭제
+	@GetMapping({"reply","update","delete"})
+	public ModelAndView getBoard(Integer num,String boardid) {
+		ModelAndView mav = new ModelAndView();
+		Board board = service.getBoard(num); 
+		mav.addObject("board",board);
+		if(boardid == null || boardid.equals("1"))
+			mav.addObject("boardName","공지사항");
+		else if(boardid.equals("2"))
+			mav.addObject("boardName","자유게시판");
+		else if(boardid.equals("3"))
+			mav.addObject("boardName","QNA");
+		return mav;
+	}
 //	@PostMapping("update")
 //	public ModelAndView update(@Valid BoardDto board, BindingResult bresult,
 //			  HttpServletRequest request) {
