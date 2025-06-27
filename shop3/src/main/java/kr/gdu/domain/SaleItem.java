@@ -3,6 +3,8 @@ package kr.gdu.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import kr.gdu.dto.ItemSetDto;
 import lombok.Getter;
@@ -25,6 +27,7 @@ public class SaleItem {
 	private int seq;     //주문상품번호
 	private int itemid;  //상품아이디
 	private int quantity;//주문상품수량
+	@ManyToOne
 	private Item item;   //상품아이디에 해당하는 상품정보
 	public SaleItem(int saleid, int seq, ItemSetDto itemSet) {
 		this.saleid = saleid;

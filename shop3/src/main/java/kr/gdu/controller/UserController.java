@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import kr.gdu.domain.Sale;
 import kr.gdu.domain.User;
 import kr.gdu.dto.UserDto;
 import kr.gdu.exception.ShopException;
@@ -40,8 +41,8 @@ import kr.gdu.util.ShopUtil;
 public class UserController {
 	@Autowired
 	private UserService service;
-//	@Autowired
-//	private ShopService shopService;
+	@Autowired
+	private ShopService shopService;
 	
 	@GetMapping("*")  //Get 방식 모든 요청시 호출
 	public ModelAndView form() {
@@ -100,6 +101,7 @@ public class UserController {
 	public ModelAndView loginForm(HttpSession session) {
 		ModelAndView mav = new ModelAndView();
 		String clientId="네이버의 client Id";
+		clientId = "CfrRBFs5rfhJxTkwkm4V";
 		String redirectURL = null;
 		try {
 			//콜백URL 설정 => 네이버에서 정상처리로 결정되면 호출해주는 URL
@@ -170,7 +172,9 @@ public class UserController {
 	@RequestMapping("naverlogin")
 	public String naverlogin(String code, String state, HttpSession session) {
 		String clientId = "클라이언트 아이디값";//애플리케이션 클라이언트 아이디값";
+		clientId = "CfrRBFs5rfhJxTkwkm4V";
 		String clientSecret = "클라이언트 시크릿값";//애플리케이션 클라이언트 시크릿값";
+		clientSecret = "h_lNha25GY";		
  	    String redirectURI=null;
 		try {
 			redirectURI = URLEncoder.encode("YOUR_CALLBACK_URL", "UTF-8");
@@ -287,9 +291,9 @@ public class UserController {
 		User user = service.selectUser(userid);
 		user = emailDecrypt(user);
 		//Sale : db정보,  주문상품정보
-//		List<Sale> salelist = shopService.saleList(userid);
+		List<Sale> salelist = shopService.saleList(userid);
 		mav.addObject("user", user);
-//		mav.addObject("salelist", salelist);
+		mav.addObject("salelist", salelist);
 		return mav;
 	}	
 	@RequestMapping("logout")

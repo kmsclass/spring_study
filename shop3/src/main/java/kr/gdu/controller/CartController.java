@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.gdu.domain.Item;
+import kr.gdu.domain.Sale;
 import kr.gdu.domain.User;
 import kr.gdu.dto.CartDto;
 import kr.gdu.dto.ItemDto;
@@ -92,7 +93,7 @@ public class CartController {
 		ModelAndView mav = new ModelAndView();
 		CartDto cart = (CartDto)session.getAttribute("CART"); //장바구니 상품
 		User loginUser = (User)session.getAttribute("loginUser"); //로그인 정보
-		SaleDto sale = service.checkend(loginUser,cart);
+		Sale sale = service.checkend(loginUser,cart);
 		session.removeAttribute("CART"); //장바구니 제거
 		mav.addObject("sale",sale);
 		return mav;
