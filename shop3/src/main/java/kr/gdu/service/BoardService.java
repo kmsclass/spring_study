@@ -342,27 +342,27 @@ public class BoardService {
 		map.put("trlist", trlist); //4개통화 데이터
 		return map;
 	}
-//	public Map<String, Integer> graph1(String id) {
-//		// list :   [{writer="홍길동",cnt:10 },{writer="김삿갓",cnt:7 },..]
-//		List<Map<String,Object>> list = boardDao.graph1(id);
-//		Map<String, Integer> map = new HashMap<>();//{홍길동:10,김삿갓:7}
-//		for(Map<String,Object> m : list) {
-//			//m : {writer="김삿갓",cnt:7 }
-//		    String writer =(String)m.get("writer"); //김삿갓
-//		    long cnt = (Long) m.get("cnt"); //7
-//		    map.put(writer,(int)cnt);
-//		}		
-//		return map; //{홍길동:10,김삿갓:7,...}
-//	}
-//	public Map<String, Integer> graph2(String id) {
-//		//list : [{day=2025-06-05,cnt=5},{day=2025-06-04,cnt=7},...]
-//		List<Map<String,Object>> list = boardDao.graph2(id);
-//		Map<String,Integer> map = new TreeMap<>(Comparator.reverseOrder());
-//		for(Map<String,Object> m : list) { 
-//			String day =(String)m.get("day");
-//			long cnt = (long)m.get("cnt"); 
-//			map.put(day,(int)cnt); //날짜의 역순으로 정렬 상태
-//		}
-//		return map; // {2025-06-05=5,2025-06-04=7,.....}
-//	}	
+	public Map<String, Integer> graph1(String id) {
+		// list :   [{writer="홍길동",cnt:10 },{writer="김삿갓",cnt:7 },..]
+		List<Map<String,Object>> list = boardDao.graph1(id);
+		Map<String, Integer> map = new HashMap<>();//{홍길동:10,김삿갓:7}
+		for(Map<String,Object> m : list) {
+			//m : {writer="김삿갓",cnt:7 }
+		    String writer =(String)m.get("writer"); //김삿갓
+		    long cnt = (Long) m.get("cnt"); //7
+		    map.put(writer,(int)cnt);
+		}		
+		return map; //{홍길동:10,김삿갓:7,...}
+	}
+	public Map<String, Integer> graph2(String id) {
+		//list : [{day=2025-06-05,cnt=5},{day=2025-06-04,cnt=7},...]
+		List<Map<String,Object>> list = boardDao.graph2(id);
+		Map<String,Integer> map = new TreeMap<>(Comparator.reverseOrder());
+		for(Map<String,Object> m : list) { 
+			String day =(String)m.get("day");
+			long cnt = (long)m.get("cnt"); 
+			map.put(day,(int)cnt); //날짜의 역순으로 정렬 상태
+		}
+		return map; // {2025-06-05=5,2025-06-04=7,.....}
+	}	
 }
