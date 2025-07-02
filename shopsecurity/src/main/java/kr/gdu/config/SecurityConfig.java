@@ -28,7 +28,8 @@ public class SecurityConfig {
 	 public SecurityFilterChain filterChain(HttpSecurity http) 
 			  throws Exception{
 		 http.authorizeHttpRequests((auth)->auth
-				 .requestMatchers("/","/login","/home").permitAll()
+				 .requestMatchers
+				 ("/","/login","/home","/join","/joinProc").permitAll()
 				//ADMIN 권한의 사용자만 접근 가능
 				 .requestMatchers("/admin").hasRole("ADMIN") 
 				// /my/로 시작하는 요청시 ADMIN 또는 USER 권한 사용자 접근 가능
@@ -36,15 +37,34 @@ public class SecurityConfig {
 				 .anyRequest().authenticated());
 		 //커스텀 로그인
 		 http.formLogin((auth)->auth.loginPage("/login") //로그인 요청 페이지 경로
-				 .loginProcessingUrl("loginProc") //로그인 form의 action값
-				 .permitAll()  //로그인 페이지는 누구나 접근 가능
-				);
+			 .loginProcessingUrl("/loginProc") //로그인 form의 action값
+             /*
+              * true : 무조건 my 페이지 요청
+              * false : 로그인 전에 요청하던 페이지가 있는 경우 해당 페이지로감. 그외는 /my를 요청
+              */
+             .defaultSuccessUrl("/my", true)   //로그인 성공 후 호출되는 페이지
+			 .permitAll()  //로그인 페이지는 누구나 접근 가능
+  		 );
 		 http.logout(logout->logout  //로그아웃 설정
 				 .logoutUrl("/logout")   //요청 URL
 				 .logoutSuccessUrl("/login") //로그아웃 후 요청되는 페이지
 				 .invalidateHttpSession(true) //세션 무효화
 				 .deleteCookies("JSESSIONID") //쿠키 삭제. 
 				 .permitAll());
+		 
+	     http.sessionManagement((auth) -> auth
+	    		 .sessionFixation().changeSessionId()	 
+	             .maximumSessions(1)
+	             .maxSessionsPreventsLogin(true));	        
+		 
+/*
+ * CSRF(Cross-Site Request Forgery,사이트간 요청 위조)
+ * 사용자가 의도하지 않은 요청을 수행하도록 하는 공격 방식		 
+ * SpringSecurity는 기본적으로 POST,PUT,DELETE 요청시는 CSRF 토큰 요구함
+ */
+		//세션기반 인증시에는 활성화하는 것이 안전함.
+		 http.csrf((auth)->auth.disable()); //csrf 인증 해제. 권장하지 않음 
+		 
 		 return http.build();
 	 }
 	 @Bean

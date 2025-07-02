@@ -13,10 +13,10 @@ import lombok.Setter;
 @Getter
 public class UserEntity { //userEntity 테이블명 생성
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY) //자동번호생성
 	private int id;
 	@Column(unique=true)
-	private String username;
-	private String password;
-	private String role;
+	private String username; //userid. 중복불가.    
+	private String password; //비밀번호
+	private String role;     //권한. 
 }

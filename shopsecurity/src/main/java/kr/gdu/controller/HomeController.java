@@ -1,11 +1,19 @@
 package kr.gdu.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import kr.gdu.dto.JoinDto;
+import kr.gdu.service.LoginService;
 
 @Controller
 public class HomeController {
+	@Autowired
+	LoginService loginService;
+	
 	@GetMapping("/") //http://localhost:8080
 	public String root(Model model) {
 		model.addAttribute("msg","/로 요청");
@@ -25,9 +33,19 @@ public class HomeController {
 	public String admin(Model model) {
 		model.addAttribute("msg","/admin로 요청");
 		return "home";
-	}
+	}	
 	@GetMapping("/login")
 	public String login() {
 		return "login";
 	}
+	@GetMapping("/join")
+	public String join() {
+		return "join";
+	}
+	@PostMapping("/joinProc")
+	public String joinProc(JoinDto joinDto) {
+		System.out.println(joinDto.getUsername());
+		loginService.joinProcess(joinDto);
+		return "redirect:/login";
+	}	
 }
