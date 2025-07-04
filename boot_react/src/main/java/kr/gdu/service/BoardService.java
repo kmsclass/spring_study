@@ -33,4 +33,16 @@ public class BoardService {
 	public BoardEntity insertBoard(BoardEntity boardEntity) {
 		return repository.save(boardEntity);
 	}
+
+	public BoardEntity getBoard(int num) {
+		return repository.findById(num).orElseGet(null);
+	}
+
+	public void addReadcnt(int num) {
+		repository.addReadcnt(num);
+	}
+
+	public void boardUpdate(BoardEntity boardEntity) {
+		repository.save(boardEntity);
+	}
 }

@@ -2,10 +2,12 @@ package kr.gdu.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +26,8 @@ import kr.gdu.service.BoardService;
 @CrossOrigin(origins="http://localhost:3000", allowCredentials="true")
 //allowCredentials="true" : 인증의 요청도 허용
 public class BoardController {
+	@Value("${image.upload.dir}")
+	private String PATH;
 	@Autowired
 	BoardService service;
 	
@@ -82,8 +86,8 @@ public class BoardController {
 	}
 	@PostMapping("boardPro")
 	public BoardEntity boardPro(@RequestParam(value="file2", required = false) 
-	MultipartFile multipartFile, BoardDto boardDto,HttpServletRequest request )  {
-		String path = request.getServletContext().getRealPath("/")+"img/board/";
+	MultipartFile multipartFile, BoardDto boardDto)  {
+		String path = PATH+"img/board/";
 		File dir = new File(path);
 		if(!dir.exists()) dir.mkdirs();
 		String filename="";
@@ -101,4 +105,71 @@ public class BoardController {
 		BoardEntity num = service.insertBoard(new BoardEntity(boardDto));
 		return num;
 	  }
+	@GetMapping("boardInfo")
+	public Map<String, Object> boardInfo(int num,HttpServletRequest request)  {
+		System.out.println(request.getServletContext().getRealPath("/"));
+		BoardEntity board = service.getBoard(num);
+		service.addReadcnt(num);
+		String boardName = null;
+		if(board.getBoardid() == null || board.getBoardid().equals("1"))
+			boardName = "공지사항";
+		else if(board.getBoardid().equals("2"))
+			boardName = "자유게시판";
+		else if(board.getBoardid().equals("3"))
+			boardName = "QNA";
+		
+		return	Map.of("board",board,
+				"boardName",boardName);
+	}	
+	@GetMapping("boardUpdateForm")
+	public Map<String, Object> boardUpdateForm(int num)  {
+		BoardEntity board = service.getBoard(num);
+		String boardName = null;
+		if(board.getBoardid() == null || board.getBoardid().equals("1"))
+			boardName = "공지사항";
+		else if(board.getBoardid().equals("2"))
+			boardName = "자유게시판";
+		else if(board.getBoardid().equals("3"))
+			boardName = "QNA";
+		
+		return	Map.of("board",board,
+				"boardName",boardName);
+	}	
+	@PostMapping("boardUpdatePro")
+	public Map<String,Object> boardUpdatePro(
+	@RequestParam(value="file2", required = false) MultipartFile multipartFile, 
+	                        BoardDto boardDto) throws IllegalStateException, IOException {
+		BoardEntity dbBoard = service.getBoard(boardDto.getNum());
+		Map<String,Object> map = new HashMap<>();
+		if(!boardDto.getPass().equals(dbBoard.getPass())) {
+			map.put("msg", "비밀번호 오류");
+			map.put("code", 100);
+			return map;
+		}
+		//입력값 정상, 비밀번호 일치
+		String path =PATH+"img/board/";
+		File dir = new File(path);
+		if(!dir.exists()) dir.mkdirs();		
+		String filename="";
+		if (multipartFile != null && !multipartFile.isEmpty()) {
+			File file = new File(path, multipartFile.getOriginalFilename());
+			filename=multipartFile.getOriginalFilename();
+			multipartFile.transferTo(file);	
+			boardDto.setFile1(filename);
+		} else {
+			boardDto.setFile1(dbBoard.getFile1());
+		}
+		try {
+		    boardDto.setRegdate(dbBoard.getRegdate());
+			service.boardUpdate(new BoardEntity(boardDto));
+			map.put("msg", "게시글 수정완료");
+			map.put("code", 0);
+		} catch (Exception e) {
+			map.put("msg", "게시글 수정에 실패 했습니다");
+			map.put("code", 200);
+			e.printStackTrace();
+		}
+		return map;
+	}
+	
 }
