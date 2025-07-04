@@ -1,15 +1,21 @@
 package kr.gdu.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpServletRequest;
+import kr.gdu.dto.BoardDto;
 import kr.gdu.entity.BoardEntity;
 import kr.gdu.service.BoardService;
 
@@ -74,4 +80,25 @@ public class BoardController {
 				"blist",blist,
 				"bottomLine",bottomLine);
 	}
+	@PostMapping("boardPro")
+	public BoardEntity boardPro(@RequestParam(value="file2", required = false) 
+	MultipartFile multipartFile, BoardDto boardDto,HttpServletRequest request )  {
+		String path = request.getServletContext().getRealPath("/")+"img/board/";
+		File dir = new File(path);
+		if(!dir.exists()) dir.mkdirs();
+		String filename="";
+		if (multipartFile!=null && !multipartFile.isEmpty()) {
+			File file = new File(path, multipartFile.getOriginalFilename());
+			filename=multipartFile.getOriginalFilename();
+			try {
+				multipartFile.transferTo(file);
+			} catch (Exception e) {
+				e.printStackTrace();
+		    }
+		}
+		boardDto.setBoardid(boardDto.getBoardid());
+		boardDto.setFile1(filename);
+		BoardEntity num = service.insertBoard(new BoardEntity(boardDto));
+		return num;
+	  }
 }

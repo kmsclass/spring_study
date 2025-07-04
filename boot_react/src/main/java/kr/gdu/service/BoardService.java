@@ -29,4 +29,8 @@ public class BoardService {
 				Sort.by(Sort.Order.desc("num")));		
 		return repository.findAll(spec,pageable);
 	}
+
+	public BoardEntity insertBoard(BoardEntity boardEntity) {
+		return repository.save(boardEntity);
+	}
 }
